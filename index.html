@@ -6,205 +6,301 @@
     <title>Dispensasi SMAN 1 Magetan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;500;700&display=swap');
+
+        :root {
+            --primary-purple: #9b59b6;
+            --lavender: #e0b0ff;
+            --lilac: #c8a2c8;
+            --soft-bg: #f8f4ff;
+        }
+
         body { 
-            background-color: #f3e5f5; /* Soft Lavender */
-            font-family: 'Quicksand', sans-serif; 
+            background-color: var(--soft-bg); 
+            font-family: 'Fredoka', sans-serif; 
+            color: #4a4a4a;
+        }
+
+        /* Hero Section */
+        .welcome-box {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            border: 4px solid var(--lavender);
+            box-shadow: 0 10px 30px rgba(155, 89, 182, 0.1);
+            margin-bottom: 40px;
+            transition: transform 0.3s;
         }
         
-        /* Navbar Aesthetic */
-        .navbar { 
-            background: linear-gradient(135deg, #9575cd, #7986cb); 
-            border-bottom: 4px solid #b39ddb;
-        }
+        .welcome-box:hover { transform: scale(1.02); }
 
-        /* Beranda Welcome Section */
-        .welcome-card {
-            background: white;
-            border-radius: 25px;
-            padding: 30px;
-            text-align: center;
-            border: 4px dashed #ce93d8;
-            margin-bottom: 30px;
-        }
         .welcome-img {
-            width: 150px;
-            height: 150px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             object-fit: cover;
-            border: 5px solid #d1c4e9;
-            margin-bottom: 15px;
+            border: 6px solid var(--lilac);
+            margin-bottom: 20px;
         }
-        .welcome-text { color: #5e35b1; font-weight: 700; }
 
-        /* Card Form & Tabel */
+        .navbar { 
+            background: linear-gradient(45deg, var(--primary-purple), var(--lilac));
+            border-bottom: 4px solid white;
+        }
+
+        /* Card Styles */
         .card { 
-            border-radius: 20px; 
+            border-radius: 25px; 
             border: none; 
-            box-shadow: 0 8px 20px rgba(149, 117, 205, 0.15); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.9);
         }
-        .card-title { color: #7e57c2; font-weight: 700; }
 
-        /* Input Style */
-        .form-control {
-            border-radius: 12px;
-            border: 2px solid #e1bee7;
+        .card-header-custom {
+            color: var(--primary-purple);
+            font-weight: 700;
+            border-bottom: 2px solid var(--soft-bg);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
         }
+
+        /* Form Controls */
+        .form-control {
+            border-radius: 15px;
+            border: 2px solid var(--lavender);
+            padding: 12px;
+            background: #fff;
+        }
+
         .form-control:focus {
-            border-color: #ba68c8;
-            box-shadow: 0 0 0 0.25rem rgba(186, 104, 200, 0.25);
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 0.25rem rgba(155, 89, 182, 0.1);
         }
 
         /* Buttons */
-        .btn-primary {
-            background-color: #9575cd;
+        .btn-submit {
+            background: var(--primary-purple);
+            color: white;
             border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            padding: 10px;
+            border-radius: 15px;
+            padding: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            transition: 0.3s;
         }
-        .btn-primary:hover { background-color: #7e57c2; }
+
+        .btn-submit:hover {
+            background: var(--lilac);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+        }
 
         /* Table */
-        .table thead { background-color: #d1c4e9; color: #5e35b1; }
-        .table { border-radius: 15px; overflow: hidden; }
-        
-        .badge-purple { background-color: #e1bee7; color: #7b1fa2; }
+        .table { border-radius: 20px; overflow: hidden; }
+        .table thead { background-color: var(--lavender); color: #6d214f; }
+        .table tbody tr:hover { background-color: #fcf8ff; }
+
+        .status-badge {
+            background: var(--lavender);
+            color: #6d214f;
+            padding: 5px 12px;
+            border-radius: 10px;
+            font-size: 0.85em;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
     </style>
 </head>
-<body onload="muatDataDispensasi()">
+<body onload="fetchData()">
 
-<nav class="navbar navbar-dark shadow-sm mb-4">
-    <div class="container text-center">
-        <span class="navbar-brand fw-bold mx-auto"><i class="bi bi-stars me-2"></i> SMASA MAGETAN DISPENSATION</span>
+<div id="loader" class="loading-overlay">
+    <div class="spinner-border text-primary" role="status"></div>
+</div>
+
+<nav class="navbar navbar-dark shadow-sm mb-5">
+    <div class="container d-flex justify-content-center">
+        <span class="navbar-brand fw-bold"><i class="bi bi-stars"></i> SMAN 1 MAGETAN</span>
     </div>
 </nav>
 
 <div class="container">
-    <div class="welcome-card">
-        <img src="https://via.placeholder.com/150" alt="SMASA" class="welcome-img">
-        <h2 class="welcome-text">Selamat Datang di Web Dispensasi Siswa</h2>
-        <p class="text-muted">Pastikan mengisi alasan dengan jujur dan jelas demi kenyamanan bersama ya! ✨</p>
+    <!-- Welcome Screen -->
+    <div class="welcome-box animate__animated animate__fadeInDown">
+        <img src="https://images.unsplash.com/photo-1523050853064-8521a30c0278?q=80&w=200&auto=format&fit=crop" alt="SMASA" class="welcome-img">
+        <h1 class="fw-bold text-purple" style="color: var(--primary-purple);">Selamat Datang di Web Dispensasi Siswa</h1>
+        <p class="lead">Pastikan mengisi data dengan jujur demi ketertiban sekolah kita tercinta! ✨</p>
     </div>
 
     <div class="row g-4">
+        <!-- Form Section -->
         <div class="col-lg-5">
-            <div class="card p-4">
-                <h5 class="card-title mb-3"><i class="bi bi-pencil-heart me-2"></i>Form Dispensasi</h5>
-                <div class="mb-3">
-                    <label class="form-label small fw-bold">Tanggal</label>
-                    <input type="date" id="tglDispensasi" class="form-control">
+            <div class="card p-4 h-100">
+                <div class="card-header-custom h4">
+                    <i class="bi bi-patch-check-fill me-2"></i> Buat Izin Baru
                 </div>
+                
                 <div class="mb-3">
-                    <label class="form-label small fw-bold">Nama Lengkap Siswa</label>
-                    <input type="text" id="namaSiswa" class="form-control" placeholder="Nama lengkap">
+                    <label class="form-label small fw-bold">Pilih Tanggal</label>
+                    <input type="date" id="tgl" class="form-control">
                 </div>
+                
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Nama Lengkap</label>
+                    <input type="text" id="nama" class="form-control" placeholder="Siapa nama kamu?">
+                </div>
+
                 <div class="row">
                     <div class="col-6 mb-3">
-                        <label class="form-label small fw-bold">Jam Mulai</label>
-                        <input type="time" id="jamMulai" class="form-control">
+                        <label class="form-label small fw-bold">Mulai Jam</label>
+                        <input type="time" id="mulai" class="form-control">
                     </div>
                     <div class="col-6 mb-3">
-                        <label class="form-label small fw-bold">Jam Selesai</label>
-                        <input type="time" id="jamSelesai" class="form-control">
+                        <label class="form-label small fw-bold">Selesai Jam</label>
+                        <input type="time" id="selesai" class="form-control">
                     </div>
                 </div>
+
                 <div class="mb-3">
                     <label class="form-label small fw-bold">Guru Pemberi Izin</label>
-                    <input type="text" id="guruIzin" class="form-control" placeholder="Nama Guru">
+                    <input type="text" id="guru" class="form-control" placeholder="Nama bapak/ibu guru">
                 </div>
-                <div class="mb-3">
-                    <label class="form-label small fw-bold">Alasan (Wajib Jujur & Jelas)</label>
-                    <textarea id="alasanDispensasi" class="form-control" rows="3" placeholder="Contoh: Mengikuti lomba OSN Tingkat Kabupaten"></textarea>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold">Alasan (Harus Jelas & Jujur)</label>
+                    <textarea id="alasan" class="form-control" rows="3" placeholder="Contoh: Mengikuti Lomba OSN Tingkat Provinsi"></textarea>
                 </div>
-                <button id="btnKirim" onclick="kirimDispensasi()" class="btn btn-primary w-100 shadow-sm">
-                    KIRIM PENGAJUAN 💜
+
+                <button onclick="submitData()" class="btn btn-submit w-100">
+                    KIRIM PENGAJUAN <i class="bi bi-send-heart-fill ms-2"></i>
                 </button>
             </div>
         </div>
 
+        <!-- Presensi Section -->
         <div class="col-lg-7">
-            <div class="card p-4">
-                <h5 class="card-title mb-3"><i class="bi bi-card-checklist me-2"></i>Daftar Presensi Dispensasi</h5>
+            <div class="card p-4 h-100">
+                <div class="card-header-custom h4">
+                    <i class="bi bi-clipboard2-data-fill me-2"></i> Presensi Dispensasi
+                </div>
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle bg-white">
+                    <table class="table table-hover align-middle">
                         <thead>
                             <tr>
-                                <th>Tanggal</th>
-                                <th>Nama Siswa</th>
-                                <th>Alasan</th>
+                                <th width="25%">Tanggal</th>
+                                <th width="35%">Nama</th>
+                                <th width="40%">Alasan</th>
                             </tr>
                         </thead>
-                        <tbody id="tabelDispensasi">
-                            </tbody>
+                        <tbody id="dispensasiBody">
+                            <!-- Data akan dimuat secara dinamis -->
+                        </tbody>
                     </table>
+                </div>
+                <div id="noData" class="text-center py-5 d-none">
+                    <i class="bi bi-emoji-smile text-muted h1"></i>
+                    <p class="text-muted mt-2">Belum ada data dispensasi hari ini.</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwT0D-OMrIJaGgFVhgyFZmX4TahZlQaJCDOmEjDcMYEWDYzgvWrFULmGUKavXcKLmlqVQ/exec";
+<footer class="text-center mt-5 py-4 text-muted small">
+    SMAN 1 Magetan - System Dispensasi Aesthetic &copy; 2024
+</footer>
 
-    async function muatDataDispensasi() {
-        const tabel = document.getElementById('tabelDispensasi');
-        tabel.innerHTML = "<tr><td colspan='3' class='text-center'>Memuat data cantik... ✨</td></tr>";
+<script>
+    // GANTI URL INI DENGAN URL WEB APP ANDA
+    const API_URL = "https://script.google.com/macros/s/AKfycbyvzPrZBm8CLVzVvFs6XT_hFvmAPHrFjtZtUfo9TLBaizAT984JgLk2vBW2SNBhhHzwCg/exec";
+
+    // Fungsi Mengambil Data (Read)
+    async function fetchData() {
+        const body = document.getElementById('dispensBody');
+        const loader = document.getElementById('loader');
+        
         try {
-            const res = await fetch(API_URL + "?action=getDispensasi");
-            const data = await res.json();
-            tabel.innerHTML = data.map(row => `
-                <tr>
-                    <td><span class="badge badge-purple">${row[0]}</span></td>
-                    <td><i class="bi bi-person-fill me-1"></i><strong>${row[1]}</strong></td>
-                    <td class="small">${row[2]}</td>
-                </tr>
-            `).reverse().join('');
-        } catch (e) { 
-            tabel.innerHTML = "<tr><td colspan='3' class='text-center'>Belum ada data atau koneksi gagal.</td></tr>"; 
+            const response = await fetch(`${API_URL}?action=read`);
+            const data = await response.json();
+            
+            const tbody = document.getElementById('dispensasiBody');
+            const noData = document.getElementById('noData');
+            
+            if (data.length === 0) {
+                noData.classList.remove('d-none');
+                tbody.innerHTML = '';
+            } else {
+                noData.classList.add('d-none');
+                tbody.innerHTML = data.map(row => `
+                    <tr>
+                        <td><span class="status-badge">${row[0]}</span></td>
+                        <td><strong>${row[1]}</strong></td>
+                        <td class="small text-muted">${row[2]}</td>
+                    </tr>
+                `).reverse().join(''); // Data terbaru di atas
+            }
+        } catch (error) {
+            console.error("Gagal mengambil data:", error);
         }
     }
 
-    async function kirimDispensasi() {
-        const tgl = document.getElementById('tglDispensasi').value;
-        const nama = document.getElementById('namaSiswa').value;
-        const mulai = document.getElementById('jamMulai').value;
-        const selesai = document.getElementById('jamSelesai').value;
-        const guru = document.getElementById('guruIzin').value;
-        const alasan = document.getElementById('alasanDispensasi').value;
-
-        if(!tgl || !nama || !alasan || !guru || !mulai || !selesai) {
-            return alert("Lengkapi semua data dan berikan alasan yang jujur ya! ✨");
-        }
-
-        const btn = document.getElementById('btnKirim');
-        btn.disabled = true;
-        btn.innerText = "Mengirim... ✨";
-
+    // Fungsi Mengirim Data (Create)
+    async function submitData() {
+        const loader = document.getElementById('loader');
         const payload = {
-            action: "tambahDispensasi",
-            tanggal: tgl,
-            nama: nama,
-            mulai: mulai,
-            selesai: selesai,
-            guru: guru,
-            alasan: alasan
+            action: "create",
+            tanggal: document.getElementById('tgl').value,
+            nama: document.getElementById('nama').value,
+            mulai: document.getElementById('mulai').value,
+            selesai: document.getElementById('selesai').value,
+            guru: document.getElementById('guru').value,
+            alasan: document.getElementById('alasan').value
         };
 
+        if (!payload.tanggal || !payload.nama || !payload.alasan) {
+            alert("Harap lengkapi data dan alasan yang jujur ya! ✨");
+            return;
+        }
+
+        loader.style.display = "flex";
+
         try {
-            await fetch(API_URL, {
+            const response = await fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify(payload)
             });
-            alert("Dispensasi berhasil dicatat! Semoga lancar urusannya! 💜");
-            location.reload();
-        } catch (e) {
-            alert("Gagal mengirim data.");
-            btn.disabled = false;
+            
+            const result = await response.text();
+            
+            if (result === "SUCCESS") {
+                // Reset form
+                document.getElementById('tgl').value = '';
+                document.getElementById('nama').value = '';
+                document.getElementById('mulai').value = '';
+                document.getElementById('selesai').value = '';
+                document.getElementById('guru').value = '';
+                document.getElementById('alasan').value = '';
+                
+                // Refresh tabel tanpa reload halaman
+                await fetchData();
+                alert("Yey! Dispensasi kamu berhasil dikirim. ✨");
+            }
+        } catch (error) {
+            alert("Terjadi kesalahan saat mengirim data.");
+        } finally {
+            loader.style.display = "none";
         }
     }
 </script>
 </body>
-
 </html>
