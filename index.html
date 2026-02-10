@@ -221,22 +221,29 @@
 </footer>
 
 <script>
-    // GANTI URL INI DENGAN URL WEB APP ANDA
-    const API_URL = "https://script.google.com/macros/s/AKfycbxmznUuZU2J3Jx4Qp0wNFXasbOBf0GUAhFscuKNASRyBjuSBfQ0y91R097wk7G1nm9Vow/exec";
+    /**
+     * PENTING: Ganti URL di bawah ini dengan URL Web App Google Script Anda.
+     * Contoh: https://script.google.com/macros/s/ABC123XYZ/exec
+     */
+    const API_URL = "https://script.google.com/macros/s/AKfycbythoktpMSSUG3hK9v98ej_B7g86-_xpsZ07Wz9Zc0vxeLSILPLbnhIk7_4zXCkGfBziA/exec";
 
     // Fungsi Mengambil Data (Read)
     async function fetchData() {
-        const body = document.getElementById('dispensBody');
-        const loader = document.getElementById('loader');
+        const tbody = document.getElementById('dispensasiBody');
+        const noData = document.getElementById('noData');
+        
+        // Cek jika URL masih default
+        if (API_URL.includes("URL_APPS_SCRIPT_ANDA_DISINI")) {
+            console.warn("API_URL belum diatur. Silakan ganti dengan URL Apps Script Anda.");
+            tbody.innerHTML = "<tr><td colspan='3' class='text-center text-danger'>Silakan atur API_URL terlebih dahulu di dalam script.</td></tr>";
+            return;
+        }
         
         try {
             const response = await fetch(`${API_URL}?action=read`);
             const data = await response.json();
             
-            const tbody = document.getElementById('dispensasiBody');
-            const noData = document.getElementById('noData');
-            
-            if (data.length === 0) {
+            if (!data || data.length === 0) {
                 noData.classList.remove('d-none');
                 tbody.innerHTML = '';
             } else {
@@ -247,15 +254,21 @@
                         <td><strong>${row[1]}</strong></td>
                         <td class="small text-muted">${row[2]}</td>
                     </tr>
-                `).reverse().join(''); // Data terbaru di atas
+                `).reverse().join(''); 
             }
         } catch (error) {
             console.error("Gagal mengambil data:", error);
+            tbody.innerHTML = "<tr><td colspan='3' class='text-center text-danger'>Gagal memuat data dari Spreadsheet.</td></tr>";
         }
     }
 
     // Fungsi Mengirim Data (Create)
     async function submitData() {
+        if (API_URL.includes("URL_APPS_SCRIPT_ANDA_DISINI")) {
+            alert("API_URL belum diatur! Data tidak bisa dikirim.");
+            return;
+        }
+
         const loader = document.getElementById('loader');
         const payload = {
             action: "create",
@@ -291,12 +304,14 @@
                 document.getElementById('guru').value = '';
                 document.getElementById('alasan').value = '';
                 
-                // Refresh tabel tanpa reload halaman
                 await fetchData();
-                alert("Yey! Dispensasi kamu berhasil dikirim. ✨");
+                alert("Yey! Dispensasi kamu berhasil dikirim ke Spreadsheet. ✨");
+            } else {
+                alert("Server merespon: " + result);
             }
         } catch (error) {
-            alert("Terjadi kesalahan saat mengirim data.");
+            console.error("Error submit:", error);
+            alert("Terjadi kesalahan saat mengirim data. Pastikan Apps Script sudah di-deploy sebagai 'Anyone'.");
         } finally {
             loader.style.display = "none";
         }
@@ -304,4 +319,3 @@
 </script>
 </body>
 </html>
-
