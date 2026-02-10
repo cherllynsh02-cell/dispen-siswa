@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispensasi SMAN 1 Magetan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            background-color: #f3e5f5; /* Soft Lavender */
+            font-family: 'Quicksand', sans-serif; 
+        }
+        
+        /* Navbar Aesthetic */
+        .navbar { 
+            background: linear-gradient(135deg, #9575cd, #7986cb); 
+            border-bottom: 4px solid #b39ddb;
+        }
+
+        /* Beranda Welcome Section */
+        .welcome-card {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            text-align: center;
+            border: 4px dashed #ce93d8;
+            margin-bottom: 30px;
+        }
+        .welcome-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #d1c4e9;
+            margin-bottom: 15px;
+        }
+        .welcome-text { color: #5e35b1; font-weight: 700; }
+
+        /* Card Form & Tabel */
+        .card { 
+            border-radius: 20px; 
+            border: none; 
+            box-shadow: 0 8px 20px rgba(149, 117, 205, 0.15); 
+        }
+        .card-title { color: #7e57c2; font-weight: 700; }
+
+        /* Input Style */
+        .form-control {
+            border-radius: 12px;
+            border: 2px solid #e1bee7;
+        }
+        .form-control:focus {
+            border-color: #ba68c8;
+            box-shadow: 0 0 0 0.25rem rgba(186, 104, 200, 0.25);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: #9575cd;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 10px;
+        }
+        .btn-primary:hover { background-color: #7e57c2; }
+
+        /* Table */
+        .table thead { background-color: #d1c4e9; color: #5e35b1; }
+        .table { border-radius: 15px; overflow: hidden; }
+        
+        .badge-purple { background-color: #e1bee7; color: #7b1fa2; }
+    </style>
+</head>
+<body onload="muatDataDispensasi()">
+
+<nav class="navbar navbar-dark shadow-sm mb-4">
+    <div class="container text-center">
+        <span class="navbar-brand fw-bold mx-auto"><i class="bi bi-stars me-2"></i> SMASA MAGETAN DISPENSATION</span>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="welcome-card">
+        <img src="https://via.placeholder.com/150" alt="SMASA" class="welcome-img">
+        <h2 class="welcome-text">Selamat Datang di Web Dispensasi Siswa</h2>
+        <p class="text-muted">Pastikan mengisi alasan dengan jujur dan jelas demi kenyamanan bersama ya! ✨</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card p-4">
+                <h5 class="card-title mb-3"><i class="bi bi-pencil-heart me-2"></i>Form Dispensasi</h5>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Tanggal</label>
+                    <input type="date" id="tglDispensasi" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Nama Lengkap Siswa</label>
+                    <input type="text" id="namaSiswa" class="form-control" placeholder="Nama lengkap">
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label class="form-label small fw-bold">Jam Mulai</label>
+                        <input type="time" id="jamMulai" class="form-control">
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label class="form-label small fw-bold">Jam Selesai</label>
+                        <input type="time" id="jamSelesai" class="form-control">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Guru Pemberi Izin</label>
+                    <input type="text" id="guruIzin" class="form-control" placeholder="Nama Guru">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Alasan (Wajib Jujur & Jelas)</label>
+                    <textarea id="alasanDispensasi" class="form-control" rows="3" placeholder="Contoh: Mengikuti lomba OSN Tingkat Kabupaten"></textarea>
+                </div>
+                <button id="btnKirim" onclick="kirimDispensasi()" class="btn btn-primary w-100 shadow-sm">
+                    KIRIM PENGAJUAN 💜
+                </button>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card p-4">
+                <h5 class="card-title mb-3"><i class="bi bi-card-checklist me-2"></i>Daftar Presensi Dispensasi</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle bg-white">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Nama Siswa</th>
+                                <th>Alasan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelDispensasi">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbznjY9SfqYfOnoA0kww_PU3_E00QO7ZhDhjmk48JlzAUdOknNB8giVQLk6BlH7RZure4g/exec";
+
+    async function muatDataDispensasi() {
+        const tabel = document.getElementById('tabelDispensasi');
+        tabel.innerHTML = "<tr><td colspan='3' class='text-center'>Memuat data cantik... ✨</td></tr>";
+        try {
+            const res = await fetch(API_URL + "?action=getDispensasi");
+            const data = await res.json();
+            tabel.innerHTML = data.map(row => `
+                <tr>
+                    <td><span class="badge badge-purple">${row[0]}</span></td>
+                    <td><i class="bi bi-person-fill me-1"></i><strong>${row[1]}</strong></td>
+                    <td class="small">${row[2]}</td>
+                </tr>
+            `).reverse().join('');
+        } catch (e) { 
+            tabel.innerHTML = "<tr><td colspan='3' class='text-center'>Belum ada data atau koneksi gagal.</td></tr>"; 
+        }
+    }
+
+    async function kirimDispensasi() {
+        const tgl = document.getElementById('tglDispensasi').value;
+        const nama = document.getElementById('namaSiswa').value;
+        const mulai = document.getElementById('jamMulai').value;
+        const selesai = document.getElementById('jamSelesai').value;
+        const guru = document.getElementById('guruIzin').value;
+        const alasan = document.getElementById('alasanDispensasi').value;
+
+        if(!tgl || !nama || !alasan || !guru || !mulai || !selesai) {
+            return alert("Lengkapi semua data dan berikan alasan yang jujur ya! ✨");
+        }
+
+        const btn = document.getElementById('btnKirim');
+        btn.disabled = true;
+        btn.innerText = "Mengirim... ✨";
+
+        const payload = {
+            action: "tambahDispensasi",
+            tanggal: tgl,
+            nama: nama,
+            mulai: mulai,
+            selesai: selesai,
+            guru: guru,
+            alasan: alasan
+        };
+
+        try {
+            await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            alert("Dispensasi berhasil dicatat! Semoga lancar urusannya! 💜");
+            location.reload();
+        } catch (e) {
+            alert("Gagal mengirim data.");
+            btn.disabled = false;
+        }
+    }
+</script>
+</body>
+</html>
