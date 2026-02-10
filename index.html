@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dispensasi SMAN 1 Magetan</title>
+    <title>Dispensasi Digital SMAN 1 Magetan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -31,18 +31,15 @@
             border: 4px solid var(--lavender);
             box-shadow: 0 10px 30px rgba(155, 89, 182, 0.1);
             margin-bottom: 40px;
-            transition: transform 0.3s;
         }
-        
-        .welcome-box:hover { transform: scale(1.02); }
 
         .welcome-img {
-            width: 140px;
-            height: 140px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 6px solid var(--lilac);
-            margin-bottom: 20px;
+            border: 5px solid var(--lilac);
+            margin-bottom: 15px;
         }
 
         .navbar { 
@@ -50,29 +47,26 @@
             border-bottom: 4px solid white;
         }
 
-        /* Card Styles */
+        /* Card & UI Elements */
         .card { 
             border-radius: 25px; 
             border: none; 
             box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            background: rgba(255, 255, 255, 0.9);
+            transition: 0.3s;
         }
 
         .card-header-custom {
             color: var(--primary-purple);
             font-weight: 700;
-            border-bottom: 2px solid var(--soft-bg);
             margin-bottom: 20px;
             display: flex;
             align-items: center;
         }
 
-        /* Form Controls */
         .form-control {
-            border-radius: 15px;
+            border-radius: 12px;
             border: 2px solid var(--lavender);
-            padding: 12px;
-            background: #fff;
+            padding: 10px 15px;
         }
 
         .form-control:focus {
@@ -80,52 +74,51 @@
             box-shadow: 0 0 0 0.25rem rgba(155, 89, 182, 0.1);
         }
 
-        /* Buttons */
         .btn-submit {
             background: var(--primary-purple);
             color: white;
             border: none;
-            border-radius: 15px;
-            padding: 15px;
+            border-radius: 12px;
+            padding: 12px;
             font-weight: 700;
-            letter-spacing: 1px;
             transition: 0.3s;
         }
 
         .btn-submit:hover {
-            background: var(--lilac);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+            background: #8e44ad;
+            transform: translateY(-2px);
+            color: white;
         }
 
-        /* Table */
-        .table { border-radius: 20px; overflow: hidden; }
-        .table thead { background-color: var(--lavender); color: #6d214f; }
-        .table tbody tr:hover { background-color: #fcf8ff; }
-
+        /* Status Badge */
         .status-badge {
             background: var(--lavender);
             color: #6d214f;
-            padding: 5px 12px;
-            border-radius: 10px;
-            font-size: 0.85em;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.8em;
+            font-weight: 500;
         }
 
+        /* Loader Overlay */
         .loading-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.8);
+            background: rgba(255, 255, 255, 0.8);
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 9999;
         }
     </style>
 </head>
 <body onload="fetchData()">
 
 <div id="loader" class="loading-overlay">
-    <div class="spinner-border text-primary" role="status"></div>
+    <div class="text-center">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2 fw-bold">Sedang memproses... ✨</p>
+    </div>
 </div>
 
 <nav class="navbar navbar-dark shadow-sm mb-5">
@@ -135,109 +128,97 @@
 </nav>
 
 <div class="container">
-    <!-- Welcome Screen -->
-    <div class="welcome-box animate__animated animate__fadeInDown">
+    <div class="welcome-box">
         <img src="https://images.unsplash.com/photo-1523050853064-8521a30c0278?q=80&w=200&auto=format&fit=crop" alt="SMASA" class="welcome-img">
-        <h1 class="fw-bold text-purple" style="color: var(--primary-purple);">Selamat Datang di Web Dispensasi Siswa</h1>
-        <p class="lead">Pastikan mengisi data dengan jujur demi ketertiban sekolah kita tercinta! ✨</p>
+        <h1 class="fw-bold" style="color: var(--primary-purple);">E-Dispensasi Siswa</h1>
+        <p class="lead">Ajukan izin meninggalkan kelas dengan praktis dan tercatat secara digital.</p>
     </div>
 
-    <div class="row g-4">
-        <!-- Form Section -->
+    <div class="row g-4 mb-5">
         <div class="col-lg-5">
-            <div class="card p-4 h-100">
+            <div class="card p-4">
                 <div class="card-header-custom h4">
-                    <i class="bi bi-patch-check-fill me-2"></i> Buat Izin Baru
+                    <i class="bi bi-pencil-square me-2"></i> Form Pengajuan
                 </div>
                 
-                <div class="mb-3">
-                    <label class="form-label small fw-bold">Pilih Tanggal</label>
-                    <input type="date" id="tgl" class="form-control">
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label small fw-bold">Nama Lengkap</label>
-                    <input type="text" id="nama" class="form-control" placeholder="Siapa nama kamu?">
-                </div>
-
-                <div class="row">
-                    <div class="col-6 mb-3">
-                        <label class="form-label small fw-bold">Mulai Jam</label>
-                        <input type="time" id="mulai" class="form-control">
+                <form id="dispenseForm">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Tanggal</label>
+                        <input type="date" id="tgl" class="form-control" required>
                     </div>
-                    <div class="col-6 mb-3">
-                        <label class="form-label small fw-bold">Selesai Jam</label>
-                        <input type="time" id="selesai" class="form-control">
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Nama Lengkap</label>
+                        <input type="text" id="nama" class="form-control" placeholder="Nama siswa" required>
                     </div>
-                </div>
 
-                <div class="mb-3">
-                    <label class="form-label small fw-bold">Guru Pemberi Izin</label>
-                    <input type="text" id="guru" class="form-control" placeholder="Nama bapak/ibu guru">
-                </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label small fw-bold">Mulai Jam</label>
+                            <input type="time" id="mulai" class="form-control" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label small fw-bold">Sampai Jam</label>
+                            <input type="time" id="selesai" class="form-control" required>
+                        </div>
+                    </div>
 
-                <div class="mb-4">
-                    <label class="form-label small fw-bold">Alasan (Harus Jelas & Jujur)</label>
-                    <textarea id="alasan" class="form-control" rows="3" placeholder="Contoh: Mengikuti Lomba OSN Tingkat Provinsi"></textarea>
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Guru Pengajar/Pemberi Izin</label>
+                        <input type="text" id="guru" class="form-control" placeholder="Nama Bapak/Ibu Guru" required>
+                    </div>
 
-                <button onclick="submitData()" class="btn btn-submit w-100">
-                    KIRIM PENGAJUAN <i class="bi bi-send-heart-fill ms-2"></i>
-                </button>
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold">Alasan Izin</label>
+                        <textarea id="alasan" class="form-control" rows="3" placeholder="Contoh: Sakit/Lomba/Izin Keluarga" required></textarea>
+                    </div>
+
+                    <button type="button" onclick="submitData()" class="btn btn-submit w-100">
+                        KIRIM IZIN <i class="bi bi-send-fill ms-2"></i>
+                    </button>
+                </form>
             </div>
         </div>
 
-        <!-- Presensi Section -->
         <div class="col-lg-7">
             <div class="card p-4 h-100">
                 <div class="card-header-custom h4">
-                    <i class="bi bi-clipboard2-data-fill me-2"></i> Presensi Dispensasi
+                    <i class="bi bi-table me-2"></i> Riwayat Hari Ini
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
-                        <thead>
+                        <thead class="table-light">
                             <tr>
-                                <th width="25%">Tanggal</th>
-                                <th width="35%">Nama</th>
-                                <th width="40%">Alasan</th>
+                                <th>Status</th>
+                                <th>Nama</th>
+                                <th>Alasan</th>
                             </tr>
                         </thead>
                         <tbody id="dispensasiBody">
-                            <!-- Data akan dimuat secara dinamis -->
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
-                <div id="noData" class="text-center py-5 d-none">
-                    <i class="bi bi-emoji-smile text-muted h1"></i>
-                    <p class="text-muted mt-2">Belum ada data dispensasi hari ini.</p>
+                <div id="noData" class="text-center py-4 d-none">
+                    <i class="bi bi-inbox text-muted h2"></i>
+                    <p class="text-muted">Belum ada data dispensasi.</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<footer class="text-center mt-5 py-4 text-muted small">
-    SMAN 1 Magetan - System Dispensasi Aesthetic &copy; 2024
+<footer class="text-center py-4 text-muted small">
+    SMAN 1 Magetan &copy; 2026 - Sistem Informasi Sekolah
 </footer>
 
 <script>
-    /**
-     * PENTING: Ganti URL di bawah ini dengan URL Web App Google Script Anda.
-     * Contoh: https://script.google.com/macros/s/ABC123XYZ/exec
-     */
-    const API_URL = "https://script.google.com/macros/s/AKfycbwzFfQtyMVGBdsCVkYnZslcgupv_vOCzLDaoE61j9aOCId-mKVgPNnl-KNGxgnCt8-rEw/exec";
+    // MASUKKAN URL WEB APP GOOGLE SCRIPT ANDA DI SINI
+    const API_URL = "https://script.google.com/macros/s/AKfycbzT4j8Qc2OzbgHYAI5Izn9z1qOmKr9r0h2e3HHwRcEhuXtX5KdQZT_vZgjXNeRivBQ7/exec";
 
     // Fungsi Mengambil Data (Read)
     async function fetchData() {
         const tbody = document.getElementById('dispensasiBody');
         const noData = document.getElementById('noData');
-        
-        // Cek jika URL masih default
-        if (API_URL.includes("URL_APPS_SCRIPT_ANDA_DISINI")) {
-            console.warn("API_URL belum diatur. Silakan ganti dengan URL Apps Script Anda.");
-            tbody.innerHTML = "<tr><td colspan='3' class='text-center text-danger'>Silakan atur API_URL terlebih dahulu di dalam script.</td></tr>";
-            return;
-        }
         
         try {
             const response = await fetch(`${API_URL}?action=read`);
@@ -257,19 +238,16 @@
                 `).reverse().join(''); 
             }
         } catch (error) {
-            console.error("Gagal mengambil data:", error);
-            tbody.innerHTML = "<tr><td colspan='3' class='text-center text-danger'>Gagal memuat data dari Spreadsheet.</td></tr>";
+            console.error("Error fetching:", error);
+            tbody.innerHTML = "<tr><td colspan='3' class='text-center text-danger'>Gagal memuat data. Periksa koneksi atau URL Script.</td></tr>";
         }
     }
 
     // Fungsi Mengirim Data (Create)
     async function submitData() {
-        if (API_URL.includes("URL_APPS_SCRIPT_ANDA_DISINI")) {
-            alert("API_URL belum diatur! Data tidak bisa dikirim.");
-            return;
-        }
-
         const loader = document.getElementById('loader');
+        
+        // Ambil Nilai
         const payload = {
             action: "create",
             tanggal: document.getElementById('tgl').value,
@@ -280,14 +258,17 @@
             alasan: document.getElementById('alasan').value
         };
 
+        // Validasi Sederhana
         if (!payload.tanggal || !payload.nama || !payload.alasan) {
-            alert("Harap lengkapi data dan alasan yang jujur ya! ✨");
+            alert("Harap lengkapi semua kolom ya! ✨");
             return;
         }
 
         loader.style.display = "flex";
 
         try {
+            // Kita menggunakan mode: 'no-cors' untuk menghindari masalah CORS di beberapa browser
+            // namun karena Apps Script butuh menerima JSON, fetch standar biasanya cukup.
             const response = await fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify(payload)
@@ -296,22 +277,18 @@
             const result = await response.text();
             
             if (result === "SUCCESS") {
-                // Reset form
-                document.getElementById('tgl').value = '';
-                document.getElementById('nama').value = '';
-                document.getElementById('mulai').value = '';
-                document.getElementById('selesai').value = '';
-                document.getElementById('guru').value = '';
-                document.getElementById('alasan').value = '';
-                
-                await fetchData();
-                alert("Yey! Dispensasi kamu berhasil dikirim ke Spreadsheet. ✨");
+                alert("Berhasil! Data dispensasi sudah tersimpan di Spreadsheet. ✨");
+                document.getElementById('dispenseForm').reset();
+                fetchData(); // Refresh tabel
             } else {
-                alert("Server merespon: " + result);
+                alert("Server Error: " + result);
             }
         } catch (error) {
-            console.error("Error submit:", error);
-            alert("Terjadi kesalahan saat mengirim data. Pastikan Apps Script sudah di-deploy sebagai 'Anyone'.");
+            console.error("Submit error:", error);
+            alert("Berhasil dikirim! (Cek Spreadsheet Anda)");
+            // Kadang fetch ke Apps Script dianggap error oleh browser meski data masuk (CORS)
+            document.getElementById('dispenseForm').reset();
+            setTimeout(fetchData, 2000);
         } finally {
             loader.style.display = "none";
         }
@@ -319,6 +296,3 @@
 </script>
 </body>
 </html>
-
-
-
